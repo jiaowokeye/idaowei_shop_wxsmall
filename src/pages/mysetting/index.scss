@@ -1,0 +1,23 @@
+.settingPage{
+	.top{
+		height:100px;
+		background: #ececec;
+		overflow:hidden;
+		padding:20px;
+		.left{
+			float: left;
+			width: 100px;
+			height: 100px;
+			border-radius:50%;
+			overflow:hidden;
+		}
+		.right{
+			margin-left:130px;
+			font-size: 40px;
+			line-height: 100px;
+		}
+	}
+	.content{
+		margin-top: 50px;
+	}
+}

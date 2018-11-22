@@ -1,0 +1,110 @@
+.orderPage{
+	.orderItem{
+	    margin-top:15px;
+	    border-top:1px solid #ececec;
+	    border-bottom:1px solid #ececec;
+	    background: #fff;
+	    padding: 25px 0 0;
+	    .order_id{
+	        font-size:26px;
+	        color:#666666;
+	        padding-left:24px;
+	        padding-bottom:10rpx;
+	    }
+	    .status{
+	        font-size:28px;
+	        color:#f5a623;
+	        padding-bottom:10px;
+	        padding-right:24px;
+	        text-align: right;
+	        float: right;
+	        width: 100px;
+	    }
+	    .cartItem{
+	        background: rgb(247, 247, 247);
+	        padding:20px 24px; 
+	        margin-bottom:8px;
+	        overflow:hidden;
+	        width:100%;
+			box-sizing:border-box;
+	        .shopImgWrap{
+				float: left;
+				width: 20%;
+	        }
+	        .shopNameWrap{
+				float: left;
+				width: 46%;
+	        }
+	        .shopOthetInfo{
+				float: left;
+				width: 34%;
+				text-align: right;
+	        }
+	        .shopImg{
+	            width: 140px;
+	            height:140px;
+	        }
+	        .c_name{
+	            font-size:26px;
+	            color:#333333;
+	            padding-left:20px;
+	        }
+	        .price{
+	            font-size:28px;
+	            color:#303030;
+	        }
+	        .count{
+	            font-size:24px;
+	            color:#909090;
+	        }
+	    }
+	    .otherPrice{
+	        font-size:26px;
+	        color:#303030;
+	        height:90px;
+	        line-height: 90px;
+	        padding-right:30px;
+	        border-bottom:1px solid #dbdbdb;
+	    }
+	    .btnGroup{
+	        padding:10px 0;
+	        .ant-btn{
+	            margin-right:10px;
+	        }
+	    }
+	    
+	    .shopBtnWrap{
+	    	text-align: right;
+	    	padding:10px 0;
+	    	.shopBtn{
+			    margin: 10px 5px;
+		        position: relative;	
+	            border: 1px solid #ececec!important;
+    			border-radius: 8px;
+			    font-size: 26px;
+			    height: 60px;
+			    line-height: 60px;
+			    padding: 0 15px;
+		        display: inline-block;
+	            outline: 0 none;
+			    -webkit-appearance: none;
+			    -webkit-box-sizing: border-box;
+			    box-sizing: border-box;
+		        overflow: hidden;	
+	            text-overflow: ellipsis;
+				word-break: break-word;
+				white-space: nowrap;
+				color: #000;
+				background-color: #fff;
+			    background: transparent;
+    			text-decoration: none;
+	    	}
+	    	.payBtn{
+		        color: #FF5000;
+		        margin:10px 5px;
+		        border:1px solid #FF5000!important;
+		    }
+	    }
+	}
+}
+

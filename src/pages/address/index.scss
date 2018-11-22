@@ -1,0 +1,91 @@
+.addressPage{
+	height: 100%;
+	background: #f7f7f7;
+	.addressList{
+		border-bottom:1px solid #dbdbdb;
+		background: #fff;
+		margin-bottom: 22px;
+		.addressItem{
+	        padding:23px 30px;
+	        font-family:PingFangSC-Regular;
+	        font-size:28px;
+	        color:#333333;
+	        margin-left:30px;
+	        border-bottom:1px solid #dbdbdb;
+	        .perinfo{
+	        	margin-right: 100px;
+	        }
+	        .btns{
+	        	position: absolute;
+	        	right:0;
+	        	top:0;
+	        	width: 100px;
+	        	text-align: right;
+	        	text{
+	        		margin:0 10px;
+	        	}
+	        }
+	        .address{
+	            color:#999999;
+	            margin-top:13px;
+	        }
+	        .btns{
+	            font-size: 28px;
+	        }
+	    }
+	    .addressItem:last-child{
+            border-bottom:0;
+        }
+	}
+	.addAddress{
+	    background:#ffffff;
+	    border-top:1px solid #dbdbdb;
+	    border-bottom:1px solid #dbdbdb;
+	    height:88px;
+	    text-align: center;
+	    font-family:PingFangSC-Regular;
+	    font-size:32px;
+	    color:#1c98cc;
+	    letter-spacing:0;
+	    line-height: 88px;
+	}
+
+	.pickerWrap{
+	    padding:24rpx 0;
+	    background-color:#FFF;
+	    color:#333;
+	    border-bottom:1PX #e2ecf4 solid;
+	    .label{
+	      margin-right:16rpx;
+	      width:172rpx;
+	      font-size:32rpx;
+	      line-height:1.5;
+	      vertical-align:middle;
+	      text-align:left;
+	      float: left;
+	    }
+	    .right{
+	      margin-left:172rpx;
+	      padding-right:18rpx;
+	      font-size:32rpx;
+	      line-height:1.5;
+	      vertical-align:middle;
+	      image{
+	        margin:10rpx;
+	        width:150rpx;
+	        height: 150rpx;
+	      }
+	    }
+  	}
+	.requireTip{
+		color:red;
+	}
+	.saveBtn{
+		margin: 20px 12px;
+		.btn-wrap{
+			width: 40%;
+			padding:0 5%;
+			float: left;
+		}
+	}
+}

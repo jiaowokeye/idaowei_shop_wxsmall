@@ -1,0 +1,86 @@
+.index{
+	.top{
+		position: absolute;
+		top:0;
+		width: 100%;
+	}
+	.content{
+		position: absolute;
+		bottom:0;
+		top:80px;
+		width: 100%;
+		overflow-y: auto;
+		.sinple{
+		    padding:20px 0 20px 20px;
+		    border-bottom:1px solid #dbdbdb;
+		    background: #fff;
+		    overflow: hidden;
+		    position: relative;
+		    .shopImg{
+		        width:180px;
+		        height:180px;
+		    }
+		    .shopInfo{
+		        height:140px;
+		        padding-left:10px;
+		        .c_name{
+		            font-family:PingFangSC-Regular;
+		            font-size:30px;
+		            font-weight: bold;
+		            color:#333333;
+		            line-height: 40px;
+		            height: 40px;
+		            overflow: hidden;
+		            text-overflow: ellipsis;
+		            white-space: nowrap;
+		        }
+		        .specification{
+		            font-family:PingFangSC-Regular;
+		            font-size:24px;
+		            color:#999999;
+		            line-height: 40px;
+		            height: 40px;
+		        }
+		    }
+		    .addCartBtn{
+		        padding: 0 10px;
+		        border-left: 1px solid #bdbdbd;
+		        float: right;
+		    }
+		    .label{
+		            height:36px;
+		            overflow: hidden;
+		            margin-bottom:4px;
+		            .lab{
+		                border-radius:2px;
+		                height:30px;
+		                line-height: 30px;
+		                font-family:STHeitiSC-Light;
+		                font-size:18px;
+		                color:#ffffff;
+		                padding:0 6px;
+		                display: inline-block;
+		                margin-right: 10px;
+		                float: left;
+		                margin-top:6px;
+		            }
+		            .lab.new{
+		                background:#08b636;
+		            }
+		            .lab.sales{
+		                background:#f39800;
+		            }
+		        }
+		    .showDiff{
+		        padding-left:10px;
+		        line-height: 34px;
+		        .shopPrice{
+		            font-size:34px;
+		            color:#ff5000;
+		            text-align:left;
+		        }
+		    }
+		}
+	}
+	
+}

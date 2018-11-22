@@ -1,0 +1,87 @@
+.cartPage{
+    .cartItem{
+        margin-left:24px;
+        padding:14px 30px 14px 0;
+        border-bottom:1px solid #dbdbdb;
+        background: #fff;
+        .shopImg{
+            width:140px;
+            height:140px;
+        }
+        .c_name{
+            font-family:PingFangSC-Medium;
+            font-size:26px;
+            color:#333333;
+            text-align:left;
+            height:80px;
+        }
+        .price{
+            font-size:30px;
+            color:#ff5000;
+            text-align:left;
+        }
+        .c_count{
+            line-height: 70px;
+            height:70px;
+        }
+        .icon_edit{
+            line-height:140px;
+            height:140px;
+        }
+        .c_count_input{
+            background:#ffffff;
+            border:2px solid #dbdbdb;
+            border-radius:6px;
+            width:136px;
+            height:46px;
+            color:#dbdbdb;
+            text-align: center;
+            -webkit-appearance: none;
+        }
+    }
+    .cartCont{
+        width:100%;
+        background: rgb(247, 247, 247);
+        padding-bottom: 93px;
+    }
+    .statics{
+        position: fixed;
+        border-top:1px solid #dbdbdb;
+        bottom:0;
+        height:93px;
+        line-height:93px;
+        width:100%;
+        background: #fff;
+        padding-left: 24px;
+        z-index: 10;
+        .checkAlldes{
+            font-size:30px;
+            color:#333333;
+            margin-left:24px;
+        }
+        .eval{
+            font-size:21px;
+            color:#333333;
+        }
+        .sumPrice{
+            font-size:30px;
+            color:#ff5000;
+        }
+        .clearing{
+            background:#40b0d1;
+            font-size:30px;
+            color:#ffffff;
+            text-align:center;
+        }
+    }
+    .check{
+        font-size: 40px;
+        position:relative;
+    }
+    .check.active{
+        color:#40b0d1;
+    }
+    .checkMt{
+        margin-top:50px;
+    }
+}

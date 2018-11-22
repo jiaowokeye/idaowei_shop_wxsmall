@@ -1,0 +1,170 @@
+.fillinorder{
+    height:100%;
+    background: rgb(247, 247, 247);
+    .cartItem{
+        margin-left:24px;
+        padding:14px 30px 14px 0;
+        border-bottom:1px solid #dbdbdb;
+        background: #fff;
+        .shopImg{
+            width:140px;
+            height:140px;
+        }
+        .c_name{
+            font-family:PingFangSC-Medium;
+            font-size:26px;
+            color:#333333;
+            text-align:left;
+            height:80px;
+        }
+        .price{
+            font-size:30px;
+            color:#ff5000;
+            text-align:left;
+        }
+        .c_count{
+            line-height: 70px;
+            height:70px;
+
+        }
+        .icon_edit{
+            line-height:140px;
+            height:140px;
+        }
+        .c_count_input{
+            background:#ffffff;
+            border:2px solid #dbdbdb;
+            border-radius:6px;
+            width:136px;
+            height:46px;
+            color:#dbdbdb;
+            text-align: center;
+            -webkit-appearance: none;
+        }
+    }
+    .addressWrap{
+        padding:24px 0;
+        background: url("./addressWrap.png") repeat-x left bottom;
+        background-color: #fff;
+        background-size: 56px 6px;
+        font-family:PingFangSC-Regular;
+        font-size:28px;
+        color:#333333;
+        padding-left:30px;
+        .perinfo{
+            margin-right: 100px;
+        }
+        .btns{
+            position: absolute;
+            right:0;
+            top:0;
+            width: 100px;
+            text-align: right;
+            text{
+                margin:0 10px;
+            }
+        }
+        .address{
+            color:#999999;
+            margin-top:13px;
+        }
+        .btns{
+            font-size: 28px;
+        }
+    }
+    .shopWrap{
+        background: #fff;
+        border-top:1px solid #dbdbdb;
+        border-bottom:1px solid #dbdbdb;
+        margin-top:20px;
+        margin-bottom: 93px;
+        .item{
+            line-height: auto;
+            height:auto;
+            display: flex;
+        }
+        .cartItem{
+            padding-top:30px;
+            height: auto;
+            .count{
+                float: right;
+                line-height: 60px;
+                font-size: 28px;
+            }
+        }
+        .label{
+            flex:1;
+            font-size: 28px;
+        }
+        .des{
+            flex:3;
+            font-size: 28px;
+            text-align: right;
+        }
+    }
+    .item{
+        height:88px;
+        margin-left: 30px;
+        line-height: 88px;
+        border-bottom:1px solid #dbdbdb;
+        font-size:16px;
+        color:#303030;
+        background: #fff;
+        padding-right:30px;
+        input{
+            font-size: 28px;
+            text-align: left;
+            margin-top:20px;
+        }
+    }
+    .item:last-child{
+        border:0;
+    }
+    .am-list-item.am-input-item{
+        padding-left: 0;
+    }
+    .statics{
+        position: fixed;
+        border-top:1px solid #dbdbdb;
+        bottom:0;
+        height:93px;
+        line-height:93px;
+        width:100%;
+        background: #fff;
+        padding-left: 24px;
+        z-index: 10;
+        .checkAlldes{
+            font-size:30px;
+            color:#333333;
+            margin-left:24px;
+        }
+        .eval{
+            font-size:21px;
+            color:#333333;
+        }
+        .sumPrice{
+            font-size:30px;
+            color:#ff5000;
+        }
+        .clearing{
+            background:#40b0d1;
+            font-size:30px;
+            color:#ffffff;
+            text-align:center;
+        }
+    }
+}
+
+
+.addAddress{
+    background:#ffffff;
+    border-top:1px solid #dbdbdb;
+    border-bottom:1px solid #dbdbdb;
+    height:88px;
+    text-align: center;
+    font-family:PingFangSC-Regular;
+    font-size:32px;
+    color:#1c98cc;
+    letter-spacing:0;
+    line-height: 88px;
+}
