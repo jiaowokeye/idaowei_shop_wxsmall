@@ -215,7 +215,8 @@ class Index extends Component {
                 status="loading"
               />
             </View>
-            <ScrollView
+            {
+              this.state.data.length>0?<ScrollView
               className='scrollview'
               scrollY
               scrollWithAnimation
@@ -280,7 +281,9 @@ class Index extends Component {
                   <Button onClick={this.handleConfirm}>确定</Button>
                 </AtModalAction>
               </AtModal>
-            </ScrollView>
+            </ScrollView>:<View>暂无商品</View>
+            }
+            
           </View>
       </View>
     )

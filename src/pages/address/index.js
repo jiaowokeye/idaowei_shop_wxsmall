@@ -86,8 +86,7 @@ class Index extends Component {
         city_id: city_id,
         country_id: country_id
       }
-      // let provincearr = JSON.stringify([e.province_id, e.city_id, e.country_id]);
-      // e.nativeEvent.stopImmediatePropagation()
+      
       this.setState({
           receiving_name: receiving_name,
           phone: phone,
@@ -121,7 +120,6 @@ class Index extends Component {
         }
       }
     })
-    
   }
   //跳转修改
   toType2(){
@@ -251,6 +249,16 @@ class Index extends Component {
     }
 
   }
+  //选择一个地址
+  chooseAddressOne = (index)=>{
+    let address_id = this.state.addressList[index].address_id;
+    let {sumPrice,selectData,chooseAddress} = this.$router.params;
+    if(chooseAddress){
+      Taro.redirectTo({
+        url:"./../fillOrder/index?sumPrice="+sumPrice+"&selectData="+selectData+"&address_id="+address_id,
+      })
+    }
+  }
   render () {
     let objArr = [];
     objArr.push(this.state.provincedata);
@@ -262,22 +270,18 @@ class Index extends Component {
             <View className='addressList'>
               {
                 this.state.addressList.map((e,i)=>{
-                  let receiving_name = e.receiving_name;
-                  let phone = e.phone;
-                  let address = e.address;
-                  let address_id = e.address_id;
+                  let {receiving_name,phone,address,address_id} = e;
                   let provincearr = JSON.stringify([e.province_id, e.city_id, e.country_id]);
                   return (
                       <View className="addressItem" key={i}>
                           <View style={{position:"relative"}}>
-                            <View className="perinfo" >{e.receiving_name}<span style={{marginLeft:"10px"}}>{e.phone}</span></View>
+                            <View className="perinfo" onClick={this.chooseAddressOne.bind(this,i)}>{e.receiving_name}<span style={{marginLeft:"10px"}}>{e.phone}</span></View>
                             <View className="btns">
                                 <Text className="EditIcon" onClick={this.editaddress.bind(this,i)}></Text>
                                 <Text className="DeleteIcon" onClick={this.delAddress.bind(this,i)} ></Text>
                             </View>
                           </View>
-                          
-                          <View className="address" span={24}>地址：{e.province.name + e.city.name + e.country.name + e.address}</View>
+                          <View className="address" onClick={this.chooseAddressOne.bind(this,i)} span={24}>地址：{e.province.name + e.city.name + e.country.name + e.address}</View>
                       </View>
                   )
                 })

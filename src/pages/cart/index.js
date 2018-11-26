@@ -31,6 +31,9 @@ class Index extends Component {
     console.log(this.props, nextProps)
   }
   componentDidMount(){
+    // this.getCartList();
+  }
+  componentDidShow () { 
     this.getCartList();
   }
   //获取购物车列表
@@ -41,7 +44,7 @@ class Index extends Component {
     _getCartList(params).then((res)=>{
         let data = res.data;
         for(let i=0;i<data.length;i++){
-          let itemOption = {isClose: false,options: OPTIONS}
+          let itemOption = {isClose: false,options: OPTIONS,"checked":false}
           data[i] = Object.assign(itemOption,data[i]);
         }
         this.setState({
@@ -50,6 +53,7 @@ class Index extends Component {
             "sumPrice": 0,
             "selectData": []
         })
+        this.evalSumPrice(data);
     })
   }
  //选购物车商品

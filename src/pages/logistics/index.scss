@@ -1,0 +1,76 @@
+.trackPage{
+    width: 100%;
+    height:100%;
+    background: rbg(247,247,247);
+    overflow: hidden;
+    .title{
+        line-height:88px;
+        border-bottom:1px solid #ececec;
+        padding-left:30px;
+        font-size: 30px;
+        background: #fff;
+        color:#303030;
+    }
+    .trackInfo{
+        line-height: 88px;
+        height:44px;
+        background: #ececec;
+        padding-left:30px;
+        font-size: 30px;
+    }
+    .send_type_des{
+        width: 193px;
+        display: inline-block;
+    }
+    .map_wrap{
+        position: absolute;
+        left:0;
+        right:0;
+        top:88px;
+        bottom:0;
+        width: 100%;
+        overflow: auto;
+        .map_canvas{
+            width: 100%;
+            height:100%;
+        }
+        .swiper{
+            z-index: 100;
+            position: absolute;
+            bottom:10px;
+            height:60px;
+            width: 100%;
+            overflow-x: scroll;
+           
+            .item{
+                float:left;
+                padding:0 20px;
+                font-size:14px;
+                position:relative;
+                line-height:20px;
+                height:60px;
+                overflow:hidden;
+                background: transparent;
+            }
+            .item::after {
+                content:"...";
+                font-weight:bold;
+                position:absolute;
+                bottom:0;
+                right:0;
+                padding:0 20px 1px 45px;
+                background:url(http://newimg88.b0.upaiyun.com/newimg88/2014/09/ellipsis_bg.png) repeat-y;
+            }
+            
+        }
+    }
+    .expressWrap{
+        padding:25px;
+        margin-top:25px;
+        background: #fff;
+    }
+    .space-carousel{
+        padding:0 16px;
+        background: transparent;
+    }
+}

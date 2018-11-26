@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text ,Input} from '@tarojs/components'
 import c_img_default from "./../../assets/image/commodity_default.png"
 import './index.scss'
-import {_getaddress,_oCrtOrUpt} from "./../../util/api.js"
+import {_getaddress,_oCrtOrUpt,_getfreight} from "./../../util/api.js"
 class Index extends Component {
 
   config = {
@@ -11,7 +11,8 @@ class Index extends Component {
   state = {
     freight:0,
     remark:"",
-    addressObj:{}
+    addressObj:{},
+    isgetfreight:false
   }
   componentWillReceiveProps (nextProps) {
     console.log(this.props, nextProps)
@@ -27,25 +28,85 @@ class Index extends Component {
 
   //获取收货地址
   getaddressList = ()=>{
+    let {sumPrice,selectData,address_id} = this.$router.params;
+    console.log(sumPrice,selectData,address_id);
     let params = {
         pageSize: 99999,
         pageNo: 1,
     }
     _getaddress(params).then((res)=>{
+        let addressObj = {};
+        let addressList = res.data.paginationData?res.data.paginationData:[{}];
+        if(address_id){
+          for(let i=0;i<addressList.length;i++){
+            if(addressList[i].address_id==address_id){
+              addressObj = addressList[i];
+              break;
+            }
+          }
+        }else{
+          addressObj = addressList[0];
+        }
         this.setState({
-          addressObj:res.data.paginationData?res.data.paginationData[0]:{}
+          addressObj:addressObj
         })
+        setTimeout(this.getfreight,200);
     });
   }
+  //获取运费
+  getfreight = () => {
+    let {sumPrice,selectData} = this.$router.params;
+    let {freight,remark,addressObj} = this.state;
+    let goods = "";
+    if (selectData !== null && selectData.length > 0) {
+        for (let i = 0; i < selectData.length; i++) {
+            goods += "cid:" + selectData[i].commodity_id + ",num:" + selectData[i].c_count + ",cost:" + sumPrice + ";";
+        }
+    }
+    goods = goods.substring(0, goods.length - 1);
+    if(!addressObj.address_id){
+        return;
+    }
+    let params = {
+        address_id: addressObj.address_id,
+        goods: goods,
+    }
+    this.setState({
+        "freight": "",
+        "isgetfreight": true
+    })
+    _getfreight(params).then((res)=>{
+        this.setState({
+            "freight": res.data,
+            "isgetfreight": false
+        })
+    })
+
+  }
+  //修改留言
   onInput = (e)=>{
     this.setState({
       remark:e.detail.value
     })
   }
+  //选择地址
+  chooseAddress = ()=>{
+    let {sumPrice,selectData} = this.$router.params;
+    Taro.redirectTo({
+      url:"./../address/index?sumPrice="+sumPrice+"&selectData="+selectData+"&chooseAddress=1",
+    })
+  }
   //提单
   oCrtOrUpt = () => {
       let {sumPrice,selectData} = this.$router.params;
-      let {freight,remark,addressObj} = this.state;
+      let {freight,remark,addressObj,isgetfreight} = this.state;
+      if(isgetfreight){
+        Taro.showToast({
+          title:"正在计算运费",
+          icon:"none"
+        })
+        return;
+      }
       if(Object.keys(addressObj).length==0){
         Taro.showToast({
           title:"请选择地址",
@@ -68,49 +129,32 @@ class Index extends Component {
           express_fee: freight
       }
       _oCrtOrUpt(params).then((res)=>{
-        console.log(res);
+          console.log(res.data);
+            Taro.redirectTo({
+              url:"./../orderDetail/index?orderId="+res.data,
+            })
+          Taro.showToast({
+            title:"提交订单成功",
+            icon:"success"
+          })
       })
-     /* request("comp/order.do?oCrtOrUpt", {
-          body: params,
-          header:{
-              'Accept': 'application/json',
-              'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-          }
-      }).then((res) => {
-          let json =res;
-          if (json.result === 1) {
-              Toast.success("提单成功");
-
-              // let url = window.location.origin + window.location.pathname + "#/order/list"
-              
-              const callback = () => {
-                  window.isHasPopState = false;
-                  let url = window.location.origin + window.location.pathname + "?#/order/detail?order_id=" + json.data;
-                  window.location.href = url;
-              }
-              if ((Number(this.state.sumPrice) + Number(this.state.freight)) !== 0) {
-                  Wxpay(json.data, callback);
-              } else {
-                  callback();
-              }
-          } else {
-              Toast.fail("提单失败");
-          }
-      }).catch((rces)=>{
-          Toast.fail("提单失败");
-      })*/
   }
   render () {
     let {sumPrice,selectData} = this.$router.params;
     let {freight,remark,addressObj} = this.state;
+    console.log(Object.keys(addressObj).length);
     return (
       <View className='fillinorder'>
-        <View className="addressWrap">
-            <View style={{position:"relative"}}>
-              <View className="perinfo" >{addressObj.receiving_name}<span style={{marginLeft:"10px"}}>{addressObj.phone}</span></View>
-            </View>
+        <View className="addressWrap" onClick={this.chooseAddress}>
+            {
+              Object.keys(addressObj).length!==0?<View>
+              <View style={{position:"relative"}}>
+                <View className="perinfo" >{addressObj.receiving_name}<span style={{marginLeft:"10px"}}>{addressObj.phone}</span></View>
+              </View>
+              <View className="address" span={24}>地址：{addressObj.province.name + addressObj.city.name + addressObj.country.name + addressObj.address}</View>
+            </View>:<View>添加地址</View>
+            }
             
-            <View className="address" span={24}>地址：{addressObj.province.name + addressObj.city.name + addressObj.country.name + addressObj.address}</View>
         </View>
         <View className="shopWrap">
           {

@@ -29,7 +29,8 @@ class App extends Component {
       'pages/active/index',
       'pages/address/index',
       'pages/order/index',
-      'pages/orderDetail/index'
+      'pages/orderDetail/index',
+      'pages/logistics/index',
     ],
     window: {
       backgroundTextStyle: 'light',

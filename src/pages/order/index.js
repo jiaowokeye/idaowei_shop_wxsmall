@@ -76,7 +76,7 @@ class Index extends Component {
       mask:true
     });
     _getOrderList(params).then((res)=>{
-      wx.hideLoading();
+      Taro.hideLoading();
       this.setState({
         data:res.data.paginationData
       })
@@ -103,6 +103,17 @@ class Index extends Component {
       }
     })
     
+  }
+  //查看物流
+  toLogistics = (orderid)=>{
+    Taro.navigateTo({
+      url:"./../logistics/index?orderId="+orderid,
+    })
+  }
+  showOrderDetail = (orderid)=>{
+    Taro.navigateTo({
+      url:"./../orderDetail/index?orderId="+orderid,
+    })
   }
   render () {
     return (
@@ -132,43 +143,45 @@ class Index extends Component {
                 onClick={()=>window.isHasPopState = false} to={"detail?order_id=" + this.state.data.order_id}
                  */
                 <View className="orderItem">
-                  <View>
-                      <View className="order_id">
-                          订单编号：{e.order_id}
-                          <View className="status">
-                            {
-                                orderTypePObj[e.status]
-                            }
-                          </View>
-                      </View>
-                  </View>
-                  {
-                      details.map((item, j) => {
-                          return (<View className="cartItem" key={j}>
-                              <View className="shopImgWrap">
-                                  <Image key={"img" + j} alt="图片" className="shopImg" src={item.c_pic ? item.c_pic : c_img_default} />
-                              </View>
-                              <View className="shopNameWrap">
-                                  <View className="c_name" key={"name" + j}>{item.c_name}</View>
-                              </View>
-                              <View className="shopOthetInfo">
-                                  <View className="price">￥{Number(item.price).toFixed(2)}</View>
-                                  <View className="count">{"x" + item.count}</View>
-                              </View>
-                          </View>)
-                      })
-                  }
-                  <View className={"otherPrice"}>
-                      <View style={{"textAlign":"right"}}>
-                          运费:￥<span style={{ fontSize: "16px" }}>{e.express_fee ? e.express_fee : 0}</span>
-                          &nbsp;&nbsp;&nbsp;合计:￥<span style={{ fontSize: "16px" }}>{(Number(e.order_sum) + Number(e.express_fee)).toFixed(2)}</span>
-                      </View>
+                  <View onClick={this.showOrderDetail.bind(this,e.order_id)}>
+                    <View>
+                        <View className="order_id">
+                            订单编号：{e.order_id}
+                            <View className="status">
+                              {
+                                  orderTypePObj[e.status]
+                              }
+                            </View>
+                        </View>
+                    </View>
+                    {
+                        details.map((item, j) => {
+                            return (<View className="cartItem" key={j}>
+                                <View className="shopImgWrap">
+                                    <Image key={"img" + j} alt="图片" className="shopImg" src={item.c_pic ? item.c_pic : c_img_default} />
+                                </View>
+                                <View className="shopNameWrap">
+                                    <View className="c_name" key={"name" + j}>{item.c_name}</View>
+                                </View>
+                                <View className="shopOthetInfo">
+                                    <View className="price">￥{Number(item.price).toFixed(2)}</View>
+                                    <View className="count">{"x" + item.count}</View>
+                                </View>
+                            </View>)
+                        })
+                    }
+                    <View className={"otherPrice"}>
+                        <View style={{"textAlign":"right"}}>
+                            运费:￥<span style={{ fontSize: "16px" }}>{e.express_fee ? e.express_fee : 0}</span>
+                            &nbsp;&nbsp;&nbsp;合计:￥<span style={{ fontSize: "16px" }}>{(Number(e.order_sum) + Number(e.express_fee)).toFixed(2)}</span>
+                        </View>
+                    </View>
                   </View>
                   <View className={[2, 8].indexOf(status) === -1 ? "" :"hide"}>
                       <View className="shopBtnWrap">
                           <View style={{"margin":"0 5px"}} onClick={this.cancleOrder.bind(this,e.order_id)} className={[-1, 0,4].indexOf(status) === -1 ? "hide" : "shopBtn"}>取消订单</View>
                           <View type="primary" style={{"margin":"0 5px"}} className={status !== -1 ? "payBtn hide" : "payBtn shopBtn"}>付款</View>
-                          <View style={{"margin":"0 5px"}} className={[1,3,5].indexOf(status) === -1 ? "hide" : "shopBtn"}>查看物流</View>
+                          <View style={{"margin":"0 5px"}} onClick={this.toLogistics.bind(this,e.order_id)} className={[1,3,5].indexOf(status) === -1 ? "hide" : "shopBtn"}>查看物流</View>
                       </View>
 
                   </View>
