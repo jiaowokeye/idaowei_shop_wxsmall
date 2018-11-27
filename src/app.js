@@ -7,7 +7,9 @@ import Index from './pages/index'
 import configStore from './store'
 
 import './app.scss'
+
 import './assets/css/core-wx-icon.css'
+import './assets/css/iconfont.css'
 if (process.env.TARO_ENV === "weapp") {
   require("taro-ui/dist/weapp/css/index.css")
 } else if (process.env.TARO_ENV === "h5") {

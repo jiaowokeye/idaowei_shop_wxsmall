@@ -6,7 +6,6 @@ import {_getCommodityList,_login,_addCart,_getMenuTree} from "./../../util/api.j
 import c_img_default from "./commodity_default.png"
 import './index.scss'
 class Index extends Component {
-
   config = {
     navigationBarTitleText: '首页'
   }
@@ -22,31 +21,81 @@ class Index extends Component {
     "num": "1.0",
     "isOpened":false,
     "hasMore": false,//有更多
-    "isLoadingMore":false,//正在加载更多
-    "isLoadingReset":false//正在刷新列表
+    "isLoadingMore":true,//正在加载更多
+    "isLoadingReset":false,//正在刷新列表
+    "hasAuthUserSetting":false,//是否已经获取用户信息权限
+    "userInfo":{}//用户信息
   }
  
   componentWillReceiveProps (nextProps) {
 
   }
   componentDidMount(){
-    
-    Taro.login({
-      //获取code
-      success: function (res) {
-        console.log(res.code);
+    // 查看是否授权
+    Taro.getSetting({
+      success:(res)=>{
+        if (res.authSetting['scope.userInfo']) {
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+          Taro.getUserInfo({
+            success: (res)=> {
+              console.log(res.userInfo);
+              this.setState({
+                hasAuthUserSetting:true,
+                userInfo:res.userInfo
+              })
+              setTimeout(this.initHomePage,200);
+            }
+          })
+        }else{
+          this.setState({
+            hasAuthUserSetting:false
+          })
+        }
       }
     })
-    // _login();
-    this.getCommodityList();
-    this.getTypeList();
-      
+    
+    
+  }
+  initHomePage = ()=>{
+    let {userInfo} = this.state;
+    Taro.login({
+      //获取code
+      success: (res)=>{
+        console.log(res.code);
+        let {comp_id}  = this.$router.params;
+        let params = {
+          code:res.code,
+          comp_id:comp_id?comp_id:"200931",//如果没有默认到自己公司
+          skip_type:1,
+          nick_name:userInfo.nickName
+        }
+        
+        _login(params).then(()=>{
+            this.getCommodityList();
+            this.getTypeList();
+        });
+      }
+    })
   }
   componentWillUnmount () { }
 
   componentDidShow () { }
 
   componentDidHide () { }
+  getUserInfo = (e)=> {
+    if(e.detail.userInfo){
+      this.setState({
+          "hasAuthUserSetting":true,//是否已经获取用户信息权限
+          "userInfo":e.detail.userInfo//用户信息
+      })
+      setTimeout(this.initHomePage,200);
+    }else{
+      this.setState({
+          "hasAuthUserSetting":false,//是否已经获取用户信息权限
+          "userInfo":{}//用户信息
+      })
+    }
+  }
   //改变类型显示 1-显示 2-隐藏
   changeShowType = (type)=>{
     this.setState({
@@ -181,110 +230,116 @@ class Index extends Component {
   }
   render () {
     let atDrawData = [];
-    let typeData = this.state.typeData;
+    let {typeData,hasAuthUserSetting,isLoadingMore} = this.state;
     for(let i=0;i<typeData.length;i++){
       atDrawData.push(typeData[i].text);
     }
     return (
       <View className='index'>
-          
-          <AtDrawer 
-            show={this.state.showType} 
-            mask 
-            onClose={this.changeShowType.bind(this,2)} 
-            onItemClick = {this.onItemClick.bind(this)}
-            items={atDrawData}
-          ></AtDrawer>
-          <View className='top'>
-              <View style={{width:'10%',float:"left"}}>
-                <AtIcon value='list' size='30' color='#F00' onClick={this.changeShowType.bind(this,1)}></AtIcon>
-              </View>
-              <View style={{width:'90%',float:"left"}}>
-                <AtSearchBar
-                  value={this.state.cond}
-                  onChange={this.onChange.bind(this)}
-                  placeholder="输入商品名字"
-                  onActionClick = {this.onScrollToUpper}
-                />
-              </View>
-              
-          </View>
-          <View className="content">
-            <View className={this.state.isLoadingReset?"":"hide"}>
-              <AtLoadMore
-                status="loading"
-              />
+      {
+        hasAuthUserSetting?<View>
+              <AtDrawer 
+              show={this.state.showType} 
+              mask 
+              onClose={this.changeShowType.bind(this,2)} 
+              onItemClick = {this.onItemClick.bind(this)}
+              items={atDrawData}
+            ></AtDrawer>
+            <View className='top'>
+                <View style={{width:'10%',float:"left","lineHeight":"41PX","textAlign":"center","borderBottom":"1px solid #ececec","height":"41PX"}}  onClick={this.changeShowType.bind(this,1)}>
+                  <Text className="iconfont icon-shaixuan"></Text>
+                </View>
+                <View style={{width:'90%',float:"left"}}>
+                  <AtSearchBar
+                    value={this.state.cond}
+                    onChange={this.onChange.bind(this)}
+                    placeholder="输入商品名字"
+                    onActionClick = {this.onScrollToUpper}
+                  />
+                </View>
+                
             </View>
-            {
-              this.state.data.length>0?<ScrollView
-              className='scrollview'
-              scrollY
-              scrollWithAnimation
-              scrollTop='0'
-              style='height: 100%;'
-              lowerThreshold='50'
-              upperThreshold='80'
-              onScrolltoupper={this.onScrolltoupper}
-              onScrollToLower={this.onScrollToLower}>
-              {
-                  this.state.data.map((e, i) => {
-                      let price = 0;
-                      let p_id = 0;
-                      if (e.commodityPrices !== null && e.commodityPrices.length > 0) {
-                          price = e.commodityPrices[0].c_price;
-                          p_id = e.commodityPrices[0].c_itemid;
-                      }
-                      price = Number(price).toFixed(2);
-                      const createItem = () => {
-                        
-                      }
-                      return (<View className="sinple">
-                                <View style={{"width":"25%","float":"left"}} onClick={this.toDetail.bind(this,e.commodity_id)}>
-                                    <Image className="shopImg" alt="商品图片" src={e.c_pic ? e.c_pic : c_img_default} />
-                                </View>
-                                <View style={{"width":"75%","float":"left"}}>
-                                    <View className="shopInfo" onClick={this.toDetail.bind(this,e.commodity_id)}>
-                                        <View className="c_name">{e.c_name}</View>
-                                        <View className="specification">{e.specification ? "规格：" + e.specification : ""}</View>
-                                        <View className="label">
-                                            <Text className={e.isnew === 1 ? "lab new" : "hide"}>新品</Text>
-                                            <Text className={e.issales === 1 ? "lab sales" : "hide"}>促销</Text>
-                                        </View>
-                                    </View>
-                                    <View className="showDiff flexAlignMiddle" style={{"alignItems":"flex-end"}}>
-                                        <Text className="shopPrice" style={{"flex":"1"}}>{"￥" + price}</Text>
-                                        <View className="addCartBtn" style={{"flex":"1"}}>
-                                          <AtIcon value='shopping-cart' onclick={this.addNum.bind(this,e.commodity_id, p_id)}  size='30' color='#F00'></AtIcon>
-                                        </View>
-                                    </View>
-                                </View>
-                              </View>)
-                      
-                  })
-              }
-              <View className={this.state.isLoadingMore?"":"hide"}>
+            <View className="content">
+              <View className={this.state.isLoadingReset?"":"hide"}>
                 <AtLoadMore
                   status="loading"
                 />
               </View>
-              <AtModal isOpened = {this.state.isOpened}> 
-                <AtModalHeader>请输入商品数量</AtModalHeader>
-                <AtModalContent>
-                   <AtInput
-                      type='digit'
-                      value={this.state.num}
-                      onChange={this.onChangeNum.bind(this)}
-                    />
-                </AtModalContent>
-                <AtModalAction>
-                  <Button onClick={this.handleCancel}>取消</Button>
-                  <Button onClick={this.handleConfirm}>确定</Button>
-                </AtModalAction>
-              </AtModal>
-            </ScrollView>:<View>暂无商品</View>
-            }
-            
+              {
+                this.state.data.length>0?<ScrollView
+                className='scrollview'
+                scrollY
+                scrollWithAnimation
+                scrollTop='0'
+                style='height: 100%;'
+                lowerThreshold='50'
+                upperThreshold='80'
+                onScrolltoupper={this.onScrolltoupper}
+                onScrollToLower={this.onScrollToLower}>
+                {
+                    this.state.data.map((e, i) => {
+                        let price = 0;
+                        let p_id = 0;
+                        if (e.commodityPrices !== null && e.commodityPrices.length > 0) {
+                            price = e.commodityPrices[0].c_price;
+                            p_id = e.commodityPrices[0].c_itemid;
+                        }
+                        price = Number(price).toFixed(2);
+                        const createItem = () => {
+                          
+                        }
+                        return (<View className="sinple">
+                                  <View style={{"width":"25%","float":"left"}} onClick={this.toDetail.bind(this,e.commodity_id)}>
+                                      <Image className="shopImg" alt="商品图片" src={e.c_pic ? e.c_pic : c_img_default} />
+                                  </View>
+                                  <View style={{"width":"75%","float":"left"}}>
+                                      <View className="shopInfo" onClick={this.toDetail.bind(this,e.commodity_id)}>
+                                          <View className="c_name">{e.c_name}</View>
+                                          <View className="specification">{e.specification ? "规格：" + e.specification : ""}</View>
+                                          <View className="label">
+                                              <Text className={e.isnew === 1 ? "lab new" : "hide"}>新品</Text>
+                                              <Text className={e.issales === 1 ? "lab sales" : "hide"}>促销</Text>
+                                          </View>
+                                      </View>
+                                      <View className="showDiff flexAlignMiddle" style={{"alignItems":"flex-end"}}>
+                                          <Text className="shopPrice" style={{"flex":"1"}}>{"￥" + price}</Text>
+                                          <View className="addCartBtn" style={{"flex":"1"}}>
+                                            <Text className="AddCartIcon" onClick={this.addNum.bind(this,e.commodity_id, p_id)}></Text>
+                                          </View>
+                                      </View>
+                                  </View>
+                                </View>)
+                        
+                    })
+                }
+                <View className={this.state.isLoadingMore?"":"hide"}>
+                  <AtLoadMore
+                    status="loading"
+                  />
+                </View>
+                <AtModal isOpened = {this.state.isOpened}> 
+                  <AtModalHeader>请输入商品数量</AtModalHeader>
+                  <AtModalContent>
+                     <AtInput
+                        type='digit'
+                        value={this.state.num}
+                        onChange={this.onChangeNum.bind(this)}
+                      />
+                  </AtModalContent>
+                  <AtModalAction>
+                    <Button onClick={this.handleCancel}>取消</Button>
+                    <Button onClick={this.handleConfirm}>确定</Button>
+                  </AtModalAction>
+                </AtModal>
+              </ScrollView>:(isLoadingMore?<View></View>:<View className="none-info">暂无商品</View>)
+              }
+              
+            </View>
+          </View>:<View className="none_auth">
+          检测到用户没有开启信息权限
+          <Button open-type="getUserInfo" onGetUserInfo={this.getUserInfo}>允许获取用户信息</Button>
           </View>
+      }
       </View>
     )
   }

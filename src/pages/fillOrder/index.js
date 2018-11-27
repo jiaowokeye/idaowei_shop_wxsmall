@@ -2,7 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text ,Input} from '@tarojs/components'
 import c_img_default from "./../../assets/image/commodity_default.png"
 import './index.scss'
-import {_getaddress,_oCrtOrUpt,_getfreight} from "./../../util/api.js"
+import {_getaddress,_oCrtOrUpt,_getfreight,_pay} from "./../../util/api.js"
 class Index extends Component {
 
   config = {
@@ -130,13 +130,15 @@ class Index extends Component {
       }
       _oCrtOrUpt(params).then((res)=>{
           console.log(res.data);
-            Taro.redirectTo({
-              url:"./../orderDetail/index?orderId="+res.data,
-            })
           Taro.showToast({
             title:"提交订单成功",
             icon:"success"
           })
+          _pay(res.data,()=>{
+            Taro.redirectTo({
+              url:"./../orderDetail/index?orderId="+res.data,
+            })
+          });
       })
   }
   render () {

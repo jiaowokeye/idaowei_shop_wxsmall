@@ -2,10 +2,53 @@ import API from "./request.js";
 import Taro from "@tarojs/taro";
 //登录 通过code换token；
 export function _login(data){
-	return API.post("comp/user.do?login",{"username":"zk","password":"1"}).then((res)=>{
-		Taro.setStorageSync("token",res.data.token);
+	return API.post("comp/weichart.do?auth",data).then((res)=>{
+		Taro.setStorageSync("token",res.token);
+		Taro.setStorageSync("open_id",res.open_id);
 	});
 }
+//支付  order_id 订单id callback 回调
+export function _pay(order_id,callback){
+	let params = {
+        order_id: order_id,
+        open_id: Taro.getStorageSync("open_id")
+    }
+    API.post("comp/weichart.do?unifiedOrder",params).then((res)=>{
+    	let json = res;
+    	let data = json.data;
+        let param_str_obj = {
+            timestamp: "1414723233",
+            nonceStr: data.nonce_str,
+            package: 'prepay_id=' + data.prepay_id,
+            signType: 'MD5', // 注意：新版支付接口使用 MD5 加密
+        }
+        param_str_obj["timeStamp"] = param_str_obj["timestamp"];
+	    delete param_str_obj["timestamp"];
+	    let params = {
+	        param_str: JSON.stringify(param_str_obj)
+	    }
+	    API.post("comp/weichart.do?getSign",params).then((res)=>{
+	    	let option = JSON.parse(JSON.stringify(param_str_obj));
+            option.paySign = res.data;
+            option.success = () => {
+            	Taro.showToast({
+					title:"支付成功",
+					icon:"none"
+				})
+				setTimeout(callback,1000);
+            }
+            option.cancel = () => {
+            	Taro.showToast({
+					title:"取消支付",
+					icon:"none"
+				})
+				setTimeout(callback,1000);
+            }
+            Taro.requestPayment(option)
+	    })
+    })
+}
+
 
 //首页的
 //

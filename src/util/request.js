@@ -18,7 +18,11 @@ const codeMessage = {
   503: '服务不可用，服务器暂时过载或维护。',
   504: '网关超时。',
 };
-const checkStatus = (response)=> {
+const checkStatus = (response,url)=> {
+	//登录设置cookie
+	if(url.indexOf("comp/weichart.do?auth")!==-1){
+		Taro.setStorageSync("cookie",response.header["Set-Cookie"]);
+	}
 	if (response.statusCode >= 200 && response.statusCode < 300) {
 		if(response.data.result!==0){
 			return response.data;
@@ -37,11 +41,10 @@ const checkStatus = (response)=> {
 	}
 	
 }
-//先暂时写死cookie和登录获取token
-const cookie = 'JSESSIONID=DCB0914841DD956B933D07FE8C0D4524; smartlbs="FS5LghJDnV9PxwCfVRUuOq0hs6/PwB/0i91GUs8NtmAY3P1f3GdxbyvZBCwuMSiga74ZbxuVcp9E3xQbdfMX9b/81Nn7Z8bP9XhA3EXDRB4!||%5BB%40284ac3e1"';
 const Post = (url,data) => {
-	// const token =  Taro.getStorageSync("token")?Taro.getStorageSync("token"):1;
-	data = Object.assign({"productid":1,"os":3,"ver":0.8,"token":1},data);
+	const cookie = Taro.getStorageSync("cookie")?Taro.getStorageSync("cookie"):"";
+	const token =  Taro.getStorageSync("token")?Taro.getStorageSync("token"):"";
+	data = Object.assign({"productid":1,"os":3,"ver":0.8,"token":token,"rand":Math.random()},data);
 	return Taro.request({
 			url:baseURI+url,
 			data: qs.stringify(data),
@@ -50,13 +53,13 @@ const Post = (url,data) => {
 				'cookie':cookie		
 			},
 			method:"POST"
-		}).then((res)=>checkStatus(res))
+		}).then((res)=>checkStatus(res,url))
 }
 
-const Get = () => {
-	const token =  Taro.getStorageSync("token");
-	data.token = token;
-	data = Object.assign({"productid":1,"os":3,"ver":0.8},data);
+const Get = (url) => {
+	const cookie = Taro.getStorageSync("cookie")?Taro.getStorageSync("cookie"):"";
+	const token =  Taro.getStorageSync("token")?Taro.getStorageSync("token"):"";
+	data = Object.assign({"productid":1,"os":3,"ver":0.8,"token":token,"rand":Math.random()},data);
 	return Taro.request({
 			url:baseURI+url,
 			data: data,
@@ -65,7 +68,7 @@ const Get = () => {
 				'cookie':cookie
 			},
 			method:"GET"
-		}).then((res)=>checkStatus(res))
+		}).then((res)=>checkStatus(res,url))
 }
 
 const API = {

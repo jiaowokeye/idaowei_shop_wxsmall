@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
 import {_getOrderInfo,_getExpress,_getTrack} from "./../../util/api.js"
-import { AtActionSheet, AtActionSheetItem } from "taro-ui"
+import { AtActionSheet, AtActionSheetItem,AtTimeline } from "taro-ui"
 import './index.scss'
 
 class Index extends Component {
@@ -90,6 +90,55 @@ class Index extends Component {
           // this.createBMapTract();
       })
   }
+  //画折线
+  draw_line_direction = (weight) => {
+      let BMap = window.BMap;
+      let icons = new BMap.IconSequence(
+          new BMap.Symbol('M0 -5 L-5 -2 L0 -4 L5 -2 Z', {
+              scale: weight / 10,
+              strokeWeight: 1,
+              rotation: 0,
+              fillColor: 'white',
+              fillOpacity: 1,
+              strokeColor: 'white'
+          }), '100%', '5%', false);
+      return icons;
+  }
+  //画地图
+  createBMapTract = () => {
+
+      let BMap = window.BMap;
+      map = new BMap.Map('map_canvas');
+      // 创建地图实例
+      let initPoint = new BMap.Point(116.404, 39.915);
+      // 创建点坐标
+      map.centerAndZoom(initPoint, 11);
+      //添加缩放按钮
+      var top_right_navigation = new BMap.NavigationControl({ anchor: 1, type: 1 }); //右上角
+      map.addControl(top_right_navigation);
+
+      if(this.state.locactions !== null && this.state.locactions.length > 0){
+          let locactions = this.state.locactions;
+          let pointArr = [];
+          for (let i = 0; i < locactions.length; i++) {
+              pointArr.push(new BMap.Point(locactions[i].bd_longitude, locactions[i].bd_latitude));
+          }
+          //添加覆盖物
+          // for(let i=0;i<pointArr.length;i++){
+          //     let marker = new BMap.Marker(pointArr[i]);
+          //     map.addOverlay(marker);
+          // }
+          var pointCollection = new BMap.PointCollection(pointArr, { shape:window.BMAP_POINT_SHAPE_WATERDROP});
+
+          var polyline = new BMap.Polyline(pointArr, {
+              strokeColor: "#25d462", strokeWeight: 4, strokeOpacity: 1,
+              icons: [this.draw_line_direction(8)]
+          });   //创建折线
+          map.addOverlay(polyline);          //增加折线
+          map.addOverlay(pointCollection);
+          map.setViewport(pointArr);
+      }
+  }
   changeSend = (nowClientIndex) => {
       this.setState({
           nowClientIndex: nowClientIndex,
@@ -157,60 +206,83 @@ class Index extends Component {
   render () {
     let {orderId} = this.$router.params;
     let {locactions,sends,expressdata,nowClientIndex,visible} = this.state;
-    console.log(locactions,sends,expressdata,nowClientIndex,visible);
     let send = sends[nowClientIndex];
-    let send_type
+    let send_type = 4;//没有物流信息
+    let len = 0;
+    let timelineArr = [];
     if (send) {
-        send_type = send.send_type; //1我司送货 2-快递 3-第三方个人
-    }else{
-        send_type = 4;//没有物流信息
+      send_type = send.send_type; //1我司送货 2-快递 3-第三方个人
+      if (send_type === 1) {
+        len = locactions ? locactions.length : 0;
+      }else if(send_type===2){
+        let len = expressdata.length;
+        for (let i = len - 1; i >= 0; i--) {
+            timelineArr.push({
+              title: expressdata[i].info, content: [expressdata[i].time] ,icon: (i!==len-1?'':'check-circle')
+            })
+        }
+      }
     }
-    switch (send_type) {
-      case 1:
-        let len = locactions ? locactions.length : 0;
-        // statements_1
-        break;
-      case 2:
-        // statements_1
-        break;
-      case 3:
-        // statements_1
-        break;
-      case 4:
-        // statements_1
-        break;
-      default:
-        // statements_def
-        break;
-    }
-
+    console.log(timelineArr);
     return (
       <View className='logisticsPage'>
           {
             send_type==1?<View className="trackPage">
-                      <View className="title" onClick={this.showModal}>
-                          <Text className="send_type_des">公司送货人</Text>{send.sendUName}
-                          <Text type="right" style={{ "float": "right", "marginTop": "0.2rem" }} />
-                      </View>
-                      <View className="trackInfo">
-                          共计{len}个轨迹点
-                      </View>
-                      <View className="map_wrap">
-                          <View className="map_canvas" ref="map_canvas" id="map_canvas">
+                <View className="title" onClick={this.showModal}>
+                    <Text className="send_type_des">公司送货人</Text>{send.sendUName}
+                    <Text type="right" style={{ "float": "right", "marginTop": "0.2rem" }} />
+                </View>
+                <View className="trackInfo">
+                    共计{len}个轨迹点
+                </View>
+                <View className="map_wrap">
+                    <View className="map_canvas" ref="map_canvas" id="map_canvas">
 
-                          </View>
-                          <View className="swiper">
-                              
-                          </View>
-                      </View>
-
-                  </View>:<View />
+                    </View>
+                    <View className="swiper">
+                        
+                    </View>
+                </View>
+            </View>:<View className="none-info"></View>
+          }
+          {
+            send_type==2?<View className="trackPage">
+                        <View className="title" onClick={this.showModal}>
+                            <Text className="send_type_des">快递公司</Text>{send.send_memo.split(",")[0]}
+                            <Text type="right" style={{ "float": "right", "marginTop": "0.2rem" }} />
+                            <View style={{"borderTop":"1px solid #dbdbdb"}}><span className="send_type_des">快递单号</span>{this.state.sends[this.state.nowClientIndex].send_memo.split(",")[1]}</View>
+                        </View>
+                        <View className="expressWrap">
+                            <View>
+                                <AtTimeline 
+                                  items={timelineArr}
+                                >
+                                </AtTimeline>
+                            </View>
+                        </View>
+                    </View>:<View className="none-info"></View>
+          }
+          {
+            send_type==3?<View className="trackPage">
+                        <View className="title" onClick={this.showModal} >
+                            <Text className="send_type_des">第三方个人</Text>
+                            {send.send_memo.split(",")[0]}{send.send_memo.split(",")[2]}
+                            <Text type="right" style={{ "float": "right", "marginTop": "0.2rem" }} />
+                        </View>
+                        <View className="none-info">暂无信息</View>
+                    </View>:<View className="none-info"></View>
+          }
+          {
+            send_type==4?<View>
+                    <View className="trackPage none-info">
+                        暂无物流跟踪信息
+                    </View>
+                </View>:<View className="none-info"></View>
           }
           <AtActionSheet isOpened={visible} cancelText='取消' title='选择送货选项'>
             {
               sends.map((item, index) => {
-                var nowClientIndex = sends.indexOf(item);
-                return <AtActionSheetItem key={index} style={{ "textAlign": "center" }} onClick={this.changeSend.bind(this, nowClientIndex)}>{
+                return <AtActionSheetItem key={index} style={{ "textAlign": "center" }} onClick={this.changeSend.bind(this, index)}>{
                     item.send_type === 1 ? "公司送货人：" + item.sendUName : (item.send_type === 2 ? item.send_memo.split(",")[0] : "第三方个人：" + item.send_memo.split(",")[0])
                 }</AtActionSheetItem>
               })

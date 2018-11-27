@@ -1,7 +1,8 @@
 .settingPage{
+	background: rgb(247, 247, 247);
+	height: 100%;
 	.top{
 		height:100px;
-		background: #ececec;
 		overflow:hidden;
 		padding:20px;
 		.left{
@@ -18,6 +19,6 @@
 		}
 	}
 	.content{
-		margin-top: 50px;
+		background: #fff;
 	}
 }

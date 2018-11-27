@@ -1,4 +1,6 @@
 .cartPage{
+    height: 100%;
+    background: rgb(247, 247, 247);
     .cartItem{
         margin-left:24px;
         padding:14px 30px 14px 0;
@@ -41,7 +43,7 @@
     }
     .cartCont{
         width:100%;
-        background: rgb(247, 247, 247);
+        background: #fff;
         padding-bottom: 93px;
     }
     .statics{

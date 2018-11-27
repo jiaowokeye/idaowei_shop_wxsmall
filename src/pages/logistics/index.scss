@@ -13,7 +13,7 @@
     }
     .trackInfo{
         line-height: 88px;
-        height:44px;
+        height:88px;
         background: #ececec;
         padding-left:30px;
         font-size: 30px;
@@ -26,7 +26,7 @@
         position: absolute;
         left:0;
         right:0;
-        top:88px;
+        top:176px;
         bottom:0;
         width: 100%;
         overflow: auto;
@@ -72,5 +72,12 @@
     .space-carousel{
         padding:0 16px;
         background: transparent;
+    }
+    .none-info {
+        padding-top: 50px;
+        font-size: 60px;
+        text-align: center;
+        color: #999;
+        font-weight: bold;
     }
 }

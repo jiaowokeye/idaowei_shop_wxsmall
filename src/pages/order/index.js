@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Button, Text } from '@tarojs/components'
 import { AtSegmentedControl,AtButton } from 'taro-ui'
-import {_getOrderList,_updateOrderStatus} from "./../../util/api.js"
+import {_getOrderList,_updateOrderStatus,_pay} from "./../../util/api.js"
 import c_img_default from "./../../assets/image/commodity_default.png"
 import './index.scss'
 
@@ -81,6 +81,10 @@ class Index extends Component {
         data:res.data.paginationData
       })
     })
+  }
+  //付款
+  pay = (orderid)=>{
+    _pay(orderid);
   }
   //取消订单
   cancleOrder = (orderid)=>{
@@ -180,7 +184,7 @@ class Index extends Component {
                   <View className={[2, 8].indexOf(status) === -1 ? "" :"hide"}>
                       <View className="shopBtnWrap">
                           <View style={{"margin":"0 5px"}} onClick={this.cancleOrder.bind(this,e.order_id)} className={[-1, 0,4].indexOf(status) === -1 ? "hide" : "shopBtn"}>取消订单</View>
-                          <View type="primary" style={{"margin":"0 5px"}} className={status !== -1 ? "payBtn hide" : "payBtn shopBtn"}>付款</View>
+                          <View type="primary" style={{"margin":"0 5px"}} onClick={this.pay.bind(this,e.order_id)} className={status !== -1 ? "payBtn hide" : "payBtn shopBtn"}>付款</View>
                           <View style={{"margin":"0 5px"}} onClick={this.toLogistics.bind(this,e.order_id)} className={[1,3,5].indexOf(status) === -1 ? "hide" : "shopBtn"}>查看物流</View>
                       </View>
 
